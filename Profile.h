@@ -6,6 +6,8 @@
 
 using namespace std;
 
+int const MAX_CHARS = 32767;
+
 enum Gender {
     MALE,
     FEMALE,

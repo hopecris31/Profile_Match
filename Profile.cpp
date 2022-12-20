@@ -6,11 +6,9 @@
 #include <iostream>
 #include <utility>
 #include <sstream>
-#include "profile.h"
+#include "Profile.h"
 
 using namespace std;
-
-int const MAX_CHARS = 32767;
 
 /**
  * Default constructor for Profile class.
@@ -172,7 +170,7 @@ vector<string> Profile::input_hobbies() {
     cin >> user_input;
     while(user_input != "done"){
         to_return.push_back(user_input);
-        cout << "enter hobby OR 'done': \n";
+        cout << "enter a hobby OR 'done': \n";
         cin >> user_input;
     }
     return to_return;
@@ -181,12 +179,21 @@ vector<string> Profile::input_hobbies() {
 
 vector<string> Profile::input_qualities() {
     vector<string> to_return;
+    string user_input;
+    cout << "Now, enter qualities and traits you think you possess, i.e. words to describe yourself\n";
+    cout << "enter a quality (or 'done' when finished): \n";
+    cin >> user_input;
+    while(user_input != "done"){
+        to_return.push_back(user_input);
+        cout << "enter a quality OR 'done': \n";
+        cin >> user_input;
+    }
     return to_return;
 }
 
 int Profile::get_age_difference(const Profile& other) {
-    int num_in_common = 0;
-    return num_in_common;
+    int difference = this->age_ - other.age_;
+    return difference;
 }
 
 int Profile::get_distance(const Profile& other) {
@@ -195,11 +202,12 @@ int Profile::get_distance(const Profile& other) {
 }
 
 bool Profile::same_country(const Profile& other) {
-    return false;
+    //std::transform(this->country_.begin(), this->country_.end(), this->country_.begin(), ::tolower);
+    return this->country_ == other.country_;
 }
 
 bool Profile::same_city(const Profile& other) {
-    return false;
+    return this->city_ == other.city_;
 }
 
 int Profile::get_common_hobbies(const Profile& other){
