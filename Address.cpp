@@ -13,6 +13,11 @@ string Address::get_data() {
 
     PyObject *pName, *pLoadModule, *pFunc;
     PyObject *pCallFunc, *pArgs;
+
+    // Set the path to the Python script
+    PyObject* sysPath = PySys_GetObject((char*)"path");
+    PyList_Append(sysPath, PyUnicode_FromString("/Users/hopecrisafi/app"));
+
     pName = PyUnicode_FromString((char*)"ProfileDistanceFunctions");
     pLoadModule = PyImport_Import(pName);
 

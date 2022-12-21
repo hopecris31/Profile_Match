@@ -11,5 +11,4 @@ include_directories(${Python3_INCLUDE_DIRS})
 add_executable(untitled2 app.cpp Profile.cpp Profile.h Address.cpp Address.h ProfileDistanceFunctions.h)
 
 target_link_libraries(untitled2 ${Python3_LIBRARIES})
-target_link_libraries(untitled2 PRIVATE nlohmann_json::nlohmann_json)
 
