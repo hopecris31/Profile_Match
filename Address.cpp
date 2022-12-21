@@ -1,57 +1,67 @@
-//
-// Created by Hope Crisafi on 12/16/22.
-//
-
 #include <Python/Python.h>
-#include "ProfileDistanceFunctions.h"
+#include <string>
+#include <map>
 #include "Address.h"
 
 using namespace std;
 
-Address::Address(string city, string state) :
-        city_(std::move(city)),state_(std::move(state)){}
-
+Address::Address(string city, string state) : city_(std::move(city)), state_(std::move(state)){
+}
 
 string Address::get_data() {
     Py_Initialize();
 
-    PyObject* module = PyImport_ImportModule("ProfileDistanceFunctions");
-    if (module == NULL) {
-        // Handle error
-        return "Error importing module";
-    }
+    PyObject *pName, *pLoadModule, *pFunc;
+    PyObject *pCallFunc, *pArgs;
+    pName = PyUnicode_FromString((char*)"ProfileDistanceFunctions");
+    pLoadModule = PyImport_Import(pName);
 
-    // Get the get_city_data function from the module
-    PyObject* func = PyObject_GetAttrString(module, "get_city_data");
-    if (func == NULL) {
-        // Handle error
-        return "Error getting function";
-    }
+    pFunc = PyObject_GetAttrString(pLoadModule, (char*)"get_city_data");
+    pArgs = PyTuple_Pack(2, PyUnicode_FromString(city_.c_str()), PyUnicode_FromString(state_.c_str()));
+    pCallFunc = PyObject_CallObject(pFunc, pArgs);
+    string data = PyString_AsString(pCallFunc);
 
-    // Call the function with the city and state arguments
-    PyObject* args = PyTuple_New(2);
-    PyTuple_SetItem(args, 0, PyUnicode_FromString(city_.c_str()));
-    PyTuple_SetItem(args, 1, PyUnicode_FromString(state_.c_str()));
-    PyObject* result = PyObject_CallObject(func, args);
-    if (result == NULL) {
-        // Handle error
-        return "Error calling function";
-    }
+    Py_DECREF(pName);
+    Py_DECREF(pLoadModule);
+    Py_DECREF(pFunc);
+    Py_DECREF(pArgs);
+    Py_DECREF(pCallFunc);
 
-    // Convert the result to a C++ string
-    PyObject* str_obj = PyObject_Str(result);
-    char* str_result = PyUnicode_AsUTF8(str_obj);
-    string result_str(str_result);
-
-    // Clean up
-    Py_DecRef(str_obj);
-    Py_DecRef(result);
-    Py_DecRef(args);
-    Py_DecRef(func);
-    Py_DecRef(module);
     Py_Finalize();
 
-    return result_str;
+    return data;
 }
 
 
+//std::string result;
+//
+// Convert the city and state strings to Python objects
+//pName = PyUnicode_FromString("ProfileDistanceFunctions");
+//pArgs = PyTuple_New(2);
+//PyTuple_SetItem(pArgs, 0, PyUnicode_FromString(city_.c_str()));
+//PyTuple_SetItem(pArgs, 1, PyUnicode_FromString(state_.c_str()));
+//
+// Load the module and the function
+//pModule = PyImport_Import(pName);
+//pFunc = PyObject_GetAttrString(pModule, "get_city_data");
+//
+// Call the function with the arguments
+//pValue = PyObject_CallObject(pFunc, pArgs);
+//
+// Convert the return value to a string
+//PyObject* pUtf8String = PyUnicode_AsUTF8String(pValue);
+//if (pUtf8String != NULL) {
+//result = PyBytes_AsString(pUtf8String);
+//Py_DECREF(pUtf8String);
+//}
+//
+// Clean up
+//Py_DECREF(pName);
+//Py_DECREF(pModule);
+//Py_DECREF(pFunc);
+//Py_DECREF(pArgs);
+//Py_DECREF(pValue);
+//
+//Py_Finalize();
+//
+//return result;

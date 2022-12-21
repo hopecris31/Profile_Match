@@ -6,9 +6,10 @@
 #define UNTITLED2_PROFILEDISTANCEFUNCTIONS_H
 
 #include <string>
+#include <map>
 
 using namespace std;
 
-string get_city_data(string city, string state);
+auto get_city_data(string city, string state);
 
 #endif //UNTITLED2_PROFILEDISTANCEFUNCTIONS_H

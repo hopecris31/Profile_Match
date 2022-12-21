@@ -5,6 +5,9 @@
 #ifndef UNTITLED2_ADDRESS_H
 #define UNTITLED2_ADDRESS_H
 #include <string>
+#include <map>
+#include <Python/Python.h>
+
 
 using namespace std;
 
@@ -15,12 +18,9 @@ class Address {
 private:
     string city_;
     string state_;
-
-
 public:
     explicit Address(string city="", string state="");
     string get_data();
-    string get_city_from_zip(int zip);
 
 
 };

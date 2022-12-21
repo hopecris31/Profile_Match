@@ -10,5 +10,7 @@ int main() {
 
     Address spacex = Address("Hawthorne", "CA");
 
+    spacex.get_data();
+
     return 0;
 }
