@@ -4,6 +4,7 @@
 
 #ifndef UNTITLED2_ADDRESS_H
 #define UNTITLED2_ADDRESS_H
+#include <Python/Python.h>
 #include <string>
 #include <map>
 

@@ -177,19 +177,6 @@ vector<string> Profile::input_hobbies() {
 
 }
 
-vector<string> Profile::input_qualities() {
-    vector<string> to_return;
-    string user_input;
-    cout << "Now, enter qualities and traits you think you possess, i.e. words to describe yourself\n";
-    cout << "enter a quality (or 'done' when finished): \n";
-    cin >> user_input;
-    while(user_input != "done"){
-        to_return.push_back(user_input);
-        cout << "enter a quality OR 'done': \n";
-        cin >> user_input;
-    }
-    return to_return;
-}
 
 int Profile::get_age_difference(const Profile& other) {
     int difference = this->age_ - other.age_;
