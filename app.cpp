@@ -1,7 +1,5 @@
 #include <iostream>
 #include "Address.h"
-#include <Python.h>
-#include "PythonAddress.h"
 
 using namespace std;
 

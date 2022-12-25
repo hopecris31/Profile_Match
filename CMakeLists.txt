@@ -8,12 +8,12 @@ find_package(PythonLibs REQUIRED)
 
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-add_executable(untitled2 app.cpp Profile.cpp Profile.h Address.cpp Address.h PythonAddress.h)
+add_executable(untitled2 app.cpp Profile.cpp Profile.h Address.cpp Address.h)
 
 target_link_libraries(untitled2 ${PYTHON_LIBRARIES})
 
 add_custom_command(TARGET untitled2 POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_SOURCE_DIR}/PythonAddress.py
-        ${CMAKE_CURRENT_BINARY_DIR}/PythonAddress.py)
+        ${CMAKE_SOURCE_DIR}/PythonMapAPIFunctions.py
+        ${CMAKE_CURRENT_BINARY_DIR}/PythonMapAPIFunctions.py)
 

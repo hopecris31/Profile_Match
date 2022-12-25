@@ -20,7 +20,7 @@ private:
     string state_;
 public:
     explicit Address(string city="", string state="");
-    double get_distance(const Address& other);
+    float get_distance(const Address& other);
 
 
 };
