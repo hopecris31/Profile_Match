@@ -4,9 +4,9 @@
 
 #ifndef UNTITLED2_ADDRESS_H
 #define UNTITLED2_ADDRESS_H
-#include <Python/Python.h>
+#include <Python.h>
 #include <string>
-#include <map>
+#include <unordered_map>
 
 
 using namespace std;
@@ -20,7 +20,7 @@ private:
     string state_;
 public:
     explicit Address(string city="", string state="");
-    string get_data();
+    double get_distance(const Address& other);
 
 
 };

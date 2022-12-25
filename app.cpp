@@ -1,16 +1,17 @@
 #include <iostream>
 #include "Address.h"
-#include "Profile.h"
+#include <Python.h>
+#include "PythonAddress.h"
 
 using namespace std;
 
 int main() {
-    Profile hope = Profile::get_user_info();
-    cout << hope.to_string() << endl;
 
     Address spacex = Address("Hawthorne", "CA");
+    Address tesla = Address("Palo Alto", "CA");
 
-    spacex.get_data();
+    double distance = spacex.get_distance(tesla);
+    cout << distance << endl;
 
     return 0;
 }
