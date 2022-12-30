@@ -1,11 +1,10 @@
 #include <Python.h>
 #include <unordered_map>
-#include <sstream>
 #include "Address.h"
 
 using namespace std;
 
-Address::Address(string city, string state) : city_(std::move(city)), state_(std::move(state)){
+Address::Address(string city, string state) : city_(std::move(city)), state_(std::move(state)) {
 }
 
 float Address::get_distance(const Address& other) {
@@ -19,7 +18,9 @@ float Address::get_distance(const Address& other) {
 
     PyObject* sysPath = PySys_GetObject((char*)"path");
     // Replace with the current directory of the python file if running on another system
-    PyList_Append(sysPath, PyUnicode_FromString("/Users/hopecrisafi/CLionProjects/app"));
+    string full_path = __FILE__;
+    string directory = full_path.substr(0, full_path.find_last_of("/\\"));
+    PyList_Append(sysPath, PyUnicode_FromString(directory.c_str()));
 
     pName = PyUnicode_FromString((char*)"PythonMapAPIFunctions");
     pLoadModule = PyImport_Import(pName);
