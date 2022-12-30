@@ -1,4 +1,3 @@
-
 /**
  * Creates a Profile object.  A Profile object contains a user's name, city, country, age, gender, and a list of hobbies.
  */
@@ -14,9 +13,9 @@ using namespace std;
 /**
  * Default constructor for Profile class.
  */
-Profile::Profile(string name, int age, string city, string state, string country, vector<string> hobbies, Gender gender) :
+Profile::Profile(string name, int age, string city, string state, string country, vector<string> hobbies, Gender gender, bool dating) :
 name_(std::move(name)), age_(age), city_(std::move(city)), state_(std::move(state)), country_(std::move(country)),
-hobbies_(std::move(hobbies)), gender_(gender) {
+hobbies_(std::move(hobbies)), gender_(gender), dating_(dating) {
 }
 
 
@@ -29,41 +28,29 @@ Profile Profile::get_user_info(){
     string country = input_country();
     vector<string> hobbies = input_hobbies();
     Gender gender = input_gender();
+    bool dating = input_dating();
 
-    return Profile(name, age, city, state, country, hobbies, gender);
+    return Profile(name, age, city, state, country, hobbies, gender, dating);
 }
 
-int Profile::percent_match(const Profile& other) {
+int Profile::calc_match_points(const Profile& other) {
+    int match_points = 0;
 
-    //if profile age difference is <= 2 years: +13
-    //if profile age difference is <= 4 years: +11
-    //if profile age difference is <= 6 years: +9
-    //if profile age difference is <= 8 years: +7
-    //if profile age difference is > 8 years: +3
-    //
-    //if profiles within 10 miles: +15
-    //if profiles within 25 miles: +13
-    //if profiles within 50 miles: +10
-    //if profile within 200 miles: +5
-    //
-    //if profiles in same city: +7
-    //
-    //if profiles in the same country: +9
-    //
-    //1 hobby in common: +20
-    //2 hobbies in common: +25
-    //3 hobbies in common: +30
-    //4+ hobbies in common: +35
-    //
-    //1 quality in common: +5
-    //2 qualities in common: +10
-    //3 qualities in common: +15
-    //4+ qualities in common: +20
+    if (this->dating_){
+        if (this->gender_ == other.gender_) {
+            return 0;
+        }
+    } else {
+        match_points += this->calc_age_points(other);
+        match_points += this->calc_distance_points(other);
+        match_points += this->calc_city_points(other);
+        match_points += this->calc_country_points(other);
+        match_points += this->calc_hobby_points(other);
 
-
-
-    return 0;
+        return match_points;
+    }
 }
+
 
 string Profile::to_string(){
     ostringstream to_return;
@@ -78,6 +65,9 @@ string Profile::to_string(){
     return to_return.str();
 }
 
+string Profile::get_name() {
+    return this->name_;
+}
 
 /**_____________________________
  *
@@ -143,7 +133,6 @@ string Profile::input_city() {
 string Profile::input_state() {
     string state;
     cout << "enter state: ";
-    cin.ignore(MAX_CHARS, '\n');
     getline(cin, state);
 
     return state;
@@ -160,6 +149,7 @@ string Profile::input_country() {
 Gender Profile::input_gender(){
     string user_input;
     cout << "enter gender: MALE, FEMALE, or OTHER (invalid input will default to OTHER): \n";
+    cin.ignore(MAX_CHARS, '\n');
     cin >> user_input;
     std::transform(user_input.begin(), user_input.end(), user_input.begin(), ::tolower);
     if(user_input == "male"){
@@ -169,6 +159,15 @@ Gender Profile::input_gender(){
     } else{
        return OTHER;
     }
+}
+
+bool Profile::input_dating() {
+    char user_input;
+    cout << "Enter 'y' if looking to match profiles for dating, or any other character if not: " << endl;
+    cin >> user_input;
+    if (reinterpret_cast<const char *>(user_input) == "y") {
+    }
+    return false;
 }
 
 vector<string> Profile::input_hobbies() {
@@ -185,13 +184,106 @@ vector<string> Profile::input_hobbies() {
 
 }
 
+int Profile::calc_age_points(const Profile &other) {
+    //if age is between 18-29 : youth age criteria
+    //if 30 or older: age gap is more tolerated
+    if (this->is_under_30()) {
+        return calc_under_30_age_points(other);
+    } else {
+        return calc_age_points_default(other);
+    }
+}
+
+int Profile::calc_distance_points(const Profile &other) {
+    float distance = this->get_distance(other);
+    if (distance <= 15) {
+        return 13;
+    } else if (distance <= 25) {
+        return 11;
+    } else if (distance <= 50) {
+        return 9;
+    } else if (distance <= 150) {
+        return 7;
+    } else if (distance <= 250) {
+        return 3;
+    } else {
+        return 1;
+    }
+}
+
+int Profile::calc_city_points(const Profile &other) {
+    if (this->in_same_city(other)) {
+        return 10;
+    } else {
+        return 0;
+    }
+}
+
+int Profile::calc_country_points(const Profile &other) {
+    if (this->in_same_country(other)) {
+        return 10;
+    } else {
+        return 0;
+    }
+}
+
+int Profile::calc_hobby_points(const Profile& other) {
+    int num_hobby_similarity = this->get_hobbies_similarity(other);
+
+    if(num_hobby_similarity > 3) {
+        return 35;
+    } else if (num_hobby_similarity == 3) {
+        return 30;
+    } else if (num_hobby_similarity == 2) {
+        return 25;
+    } else if (num_hobby_similarity == 1) {
+        return 20;
+    } else {
+        return 0;
+    }
+}
+
 
 int Profile::get_age_difference(const Profile& other) {
     int difference = this->age_ - other.age_;
     return abs(difference);
 }
 
-int Profile::get_distance(const Profile& other) {
+bool Profile::is_under_30() const{
+    return this->age_ < 30;
+}
+
+int Profile::calc_under_30_age_points(const Profile& other) {
+    int age_difference = get_age_difference(other);
+    if (age_difference <= 2) {
+        return 13;
+    } else if (age_difference <= 4) {
+        return 11;
+    } else if (age_difference <= 6) {
+        return 9;
+    } else if (age_difference <= 8) {
+        return 7;
+    } else {
+        return 3;
+    }
+}
+
+int Profile::calc_age_points_default(const Profile &other) {
+    int age_difference = get_age_difference(other);
+    if (age_difference <= 4) {
+        return 13;
+    } else if (age_difference <= 8) {
+        return 11;
+    } else if (age_difference <= 12) {
+        return 9;
+    } else if (age_difference <= 16) {
+        return 7;
+    } else {
+        return 3;
+    }
+}
+
+float Profile::get_distance(const Profile& other) {
     Py_Initialize();
 
     PyObject *pName;
@@ -233,16 +325,15 @@ int Profile::get_distance(const Profile& other) {
     return data;
 }
 
-bool Profile::same_country(const Profile& other) {
-    std::transform(this->country_.begin(), this->country_.end(), this->country_.begin(), ::tolower);
-    return this->country_ == other.country_;
-}
-
-bool Profile::same_city(const Profile& other) {
+bool Profile::in_same_city(const Profile& other) {
     return this->city_ == other.city_;
 }
 
-int Profile::get_hobby_points(const Profile& other){
+bool Profile::in_same_country(const Profile& other) {
+    return this->country_ == other.country_;
+}
+
+int Profile::get_hobbies_similarity(const Profile& other){
     Py_Initialize();
 
     PyObject *pName;
