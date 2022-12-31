@@ -8,7 +8,7 @@ find_package(PythonLibs REQUIRED)
 
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-add_executable(untitled2 app.cpp Profile.cpp Profile.h Address.cpp Address.h UnitTests.cpp UnitTests.h)
+add_executable(untitled2 app.cpp Profile.cpp Profile.h)
 
 target_link_libraries(untitled2 ${PYTHON_LIBRARIES})
 
