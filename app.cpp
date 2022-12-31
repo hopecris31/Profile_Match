@@ -53,5 +53,3 @@ int main() {
 
     return 0;
 }
-
-//optional parameter, if set to true, makes members of the same sex 0% match (dating mode)
